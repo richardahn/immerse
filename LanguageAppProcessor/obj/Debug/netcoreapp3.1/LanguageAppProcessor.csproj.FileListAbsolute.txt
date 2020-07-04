@@ -1,0 +1,13 @@
+C:\Users\Richard\Documents\Development\LanguageApp\LanguageAppProcessor\bin\Debug\netcoreapp3.1\LanguageAppProcessor.exe
+C:\Users\Richard\Documents\Development\LanguageApp\LanguageAppProcessor\bin\Debug\netcoreapp3.1\LanguageAppProcessor.deps.json
+C:\Users\Richard\Documents\Development\LanguageApp\LanguageAppProcessor\bin\Debug\netcoreapp3.1\LanguageAppProcessor.runtimeconfig.json
+C:\Users\Richard\Documents\Development\LanguageApp\LanguageAppProcessor\bin\Debug\netcoreapp3.1\LanguageAppProcessor.runtimeconfig.dev.json
+C:\Users\Richard\Documents\Development\LanguageApp\LanguageAppProcessor\bin\Debug\netcoreapp3.1\LanguageAppProcessor.dll
+C:\Users\Richard\Documents\Development\LanguageApp\LanguageAppProcessor\bin\Debug\netcoreapp3.1\LanguageAppProcessor.pdb
+C:\Users\Richard\Documents\Development\LanguageApp\LanguageAppProcessor\obj\Debug\netcoreapp3.1\LanguageAppProcessor.AssemblyInfoInputs.cache
+C:\Users\Richard\Documents\Development\LanguageApp\LanguageAppProcessor\obj\Debug\netcoreapp3.1\LanguageAppProcessor.AssemblyInfo.cs
+C:\Users\Richard\Documents\Development\LanguageApp\LanguageAppProcessor\obj\Debug\netcoreapp3.1\LanguageAppProcessor.csproj.CoreCompileInputs.cache
+C:\Users\Richard\Documents\Development\LanguageApp\LanguageAppProcessor\obj\Debug\netcoreapp3.1\LanguageAppProcessor.dll
+C:\Users\Richard\Documents\Development\LanguageApp\LanguageAppProcessor\obj\Debug\netcoreapp3.1\LanguageAppProcessor.pdb
+C:\Users\Richard\Documents\Development\LanguageApp\LanguageAppProcessor\obj\Debug\netcoreapp3.1\LanguageAppProcessor.genruntimeconfig.cache
+C:\Users\Richard\Documents\Development\LanguageApp\LanguageAppProcessor\obj\Debug\netcoreapp3.1\LanguageAppProcessor.csprojAssemblyReference.cache
