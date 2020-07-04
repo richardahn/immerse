@@ -55,6 +55,7 @@ namespace LanguageAppProcessor
         offset -= LearningRate * iteration.Gradient;
       }
 
+
       return new Subtitle
       {
         MovieName = input.MovieName,
@@ -65,7 +66,7 @@ namespace LanguageAppProcessor
           TimeFrame = new TimeFrame()
           {
             Start = i.TimeFrame.Start.Add(TimeSpan.FromSeconds(offset)),
-            End = i.TimeFrame.End,
+            End = i.TimeFrame.End.Add(TimeSpan.FromSeconds(offset)),
           }
         })
       };
@@ -92,13 +93,14 @@ namespace LanguageAppProcessor
       List<SubtitleInterval> searchRange = target.Intervals.ToList();
       foreach (var interval in input.Intervals)
       {
-        var iStart = interval.TimeFrame.Start.Add(TimeSpan.FromSeconds(inputOffset));
-        int closestIntervalIndex = Search.Look(iStart, currentStartIndex, searchRange);
-        currentStartIndex = closestIntervalIndex;
+        var yPred = interval.TimeFrame.Start.Add(TimeSpan.FromSeconds(inputOffset));
+        int closestIntervalIndex = Search.Look(yPred, currentStartIndex, searchRange, tf => tf.Start);
+        var y = searchRange[closestIntervalIndex].TimeFrame.Start;
 
-        double error = (iStart - searchRange[closestIntervalIndex].TimeFrame.Start).TotalSeconds;
+        double error = (yPred - y).TotalSeconds;
         errorSum += Math.Abs(error); // MAE error
         gradientSum += error >= 0 ? 1 : -1; // MAE error gradient
+        currentStartIndex = closestIntervalIndex;
       }
       int M = input.Intervals.Count();
       return new Iteration

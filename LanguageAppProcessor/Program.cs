@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace LanguageAppProcessor
 {
@@ -11,24 +12,25 @@ namespace LanguageAppProcessor
     {
       Console.OutputEncoding = Encoding.UTF8;
       string rootDir = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\.."));
-      string filePath = @$"{rootDir}\Data\knk_eng.srt";
-      string filePathKor = $@"{rootDir}\Data\knk_kor.srt";
-      var parser = new SRTSubtitleParser();
-      var parserKor = new SRTSubtitleParser();
-      var subtitle = parser.Parse(filePath);
-      var subtitleKor = parserKor.Parse(filePathKor);
+      var files = Directory.GetFiles(rootDir + @"\Data");
 
-      // Aggregator
-
-
-      // Offset
-      var offsetter = new SubtitleOffsetter();
-      var transformed = offsetter.Transform(subtitle, subtitleKor);
-      offsetter.PrintHistory();
-
-      // Map
-      var mapping = new SubtitleMapping(transformed, subtitleKor);
-      mapping.Print();
+      var context = new TranslationContext();
+      for (int i = 0; i < files.Length; i += 2)
+      {
+        string native;
+        string translated;
+        if (files[i].Contains("en"))
+        {
+          native = files[i];
+          translated = files[i + 1];
+        }
+        else
+        {
+          native = files[i + 1];
+          translated = files[i];
+        }
+        new TranslationProcessor().Process(native, translated); //.Save(context);
+      }
     }
   }
 }

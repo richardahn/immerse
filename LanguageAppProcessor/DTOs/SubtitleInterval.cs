@@ -10,6 +10,33 @@ namespace LanguageAppProcessor
     public int? Index { get; set; }
     public TimeFrame TimeFrame { get; set; }
     public List<string> Lines { get; set; }
+    public string JoinedLines => string.Join(". ", Lines);
+
+
+    public double Error(SubtitleInterval b)
+    {
+      return Error(this, b);
+    }
+    public double StartError(SubtitleInterval b)
+    {
+      return StartError(this, b);
+    }
+    public double EndError(SubtitleInterval b)
+    {
+      return EndError(this, b);
+    }
+    public static double Error(SubtitleInterval a, SubtitleInterval b)
+    {
+      return StartError(a, b) + EndError(a, b);
+    }
+    public static double StartError(SubtitleInterval a, SubtitleInterval b)
+    {
+      return Math.Abs((a.TimeFrame.Start - b.TimeFrame.Start).TotalSeconds);
+    }
+    public static double EndError(SubtitleInterval a, SubtitleInterval b)
+    {
+      return Math.Abs((a.TimeFrame.End - b.TimeFrame.End).TotalSeconds);
+    }
   }
   public class TimeFrame
   {
