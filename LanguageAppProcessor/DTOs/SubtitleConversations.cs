@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace LanguageAppProcessor.DTOs
@@ -9,6 +10,10 @@ namespace LanguageAppProcessor.DTOs
     public string Source { get; set; }
     public List<SubtitleConversation> Conversations { get; set; }
 
+    public void Filter(Func<SubtitleConversation, bool> condition)
+    {
+      Conversations = Conversations.Where(condition).ToList();
+    }
     public void Print()
     {
       foreach (var conversation in Conversations)

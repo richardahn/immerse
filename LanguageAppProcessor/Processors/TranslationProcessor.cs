@@ -44,6 +44,16 @@ namespace LanguageAppProcessor
         return new SMISubtitleParser();
       }
     }
+    // Hyperparameters
+    public double MaxErrorAllowed { get; set; }
+    public double ConversationSizeMinimum { get; set; }
+    public double SilenceMinimum { get; set; }
+    public TranslationProcessor(double maxErrorAllowed = 3, int conversationSizeMinimum = 3, double silenceMinimum = 1.5)
+    {
+      MaxErrorAllowed = maxErrorAllowed;
+      ConversationSizeMinimum = conversationSizeMinimum;
+      SilenceMinimum = silenceMinimum;
+    }
     public ProcessedTranslation Process(string nativeFilePath, string translatedFilePath)
     {
       var nativeParser = ParserFromExtension(nativeFilePath.Split('.').Last());
@@ -58,11 +68,13 @@ namespace LanguageAppProcessor
 
       // Map
       var mapping = new SubtitleMapping(transformed, translatedSubtitle);
-      mapping.Filter(i => i.Error < 2.5);
+      mapping.Filter(i => i.Error < MaxErrorAllowed);
       //mapping.Print();
       //mapping.PrintMismatches();
 
-      var conversations = new SubtitleConversationAggregator().Aggregate(mapping);
+      var conversations = new SubtitleConversationAggregator(SilenceMinimum)
+        .Aggregate(mapping);
+      conversations.Filter(i => i.Intervals.Count >= ConversationSizeMinimum);
       //conversations.Print();
       mapping.PrintErrorHistogram();
 

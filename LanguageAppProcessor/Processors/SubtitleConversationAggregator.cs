@@ -8,16 +8,20 @@ namespace LanguageAppProcessor
 {
   public class SubtitleConversationAggregator
   {
+    public double SilenceMinimum { get; set; }
+    public SubtitleConversationAggregator(double silenceMinimum)
+    {
+      SilenceMinimum = silenceMinimum;
+    }
     public SubtitleConversations Aggregate(SubtitleMapping mapping)
     {
-      double silenceMinimum = 2.5;
       double silenceStart = 0;
 
       List<SubtitleConversation> conversations = new List<SubtitleConversation>();
       SubtitleConversation currentConversation = new SubtitleConversation();
       foreach (var interval in mapping.Intervals)
       {
-        if (interval.Input.TimeFrame.Start.TotalSeconds - silenceStart >= silenceMinimum) // Ended conversation
+        if (interval.Input.TimeFrame.Start.TotalSeconds - silenceStart >= SilenceMinimum) // Ended conversation
         {
           if (currentConversation.Intervals.Any())
             conversations.Add(currentConversation);

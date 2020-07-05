@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,9 @@ namespace LanguageAppProcessor
       var files = Directory.GetFiles(rootDir + @"\Data");
 
       var context = new TranslationContext();
+      context.Database.ExecuteSqlCommand($"TRUNCATE TABLE [ConversationLines]");
+      context.Conversations.RemoveRange(context.Conversations);
+      context.SaveChanges();
       for (int i = 0; i < files.Length; i += 2)
       {
         string native;
@@ -29,7 +33,7 @@ namespace LanguageAppProcessor
           native = files[i + 1];
           translated = files[i];
         }
-        new TranslationProcessor().Process(native, translated); //.Save(context);
+        new TranslationProcessor().Process(native, translated).Save(context);
       }
     }
   }
