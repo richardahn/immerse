@@ -9,6 +9,13 @@ namespace LanguageAppProcessor
 {
   class Program
   {
+
+    static void ClearDatabase(TranslationContext context)
+    {
+      context.Database.ExecuteSqlCommand($"TRUNCATE TABLE [ConversationLines]");
+      context.Conversations.RemoveRange(context.Conversations);
+      context.SaveChanges();
+    }
     static void Main(string[] args)
     {
       Console.OutputEncoding = Encoding.UTF8;
@@ -16,9 +23,7 @@ namespace LanguageAppProcessor
       var files = Directory.GetFiles(rootDir + @"\Data");
 
       var context = new TranslationContext();
-      context.Database.ExecuteSqlCommand($"TRUNCATE TABLE [ConversationLines]");
-      context.Conversations.RemoveRange(context.Conversations);
-      context.SaveChanges();
+      ClearDatabase(context);
       for (int i = 0; i < files.Length; i += 2)
       {
         string native;

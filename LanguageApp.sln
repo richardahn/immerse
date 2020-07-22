@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30225.117
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LanguageApp", "LanguageApp\LanguageApp.csproj", "{395B808A-2085-41A6-8D16-971A75F19813}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LanguageApp", "LanguageApp\LanguageApp.csproj", "{395B808A-2085-41A6-8D16-971A75F19813}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LanguageAppProcessor", "LanguageAppProcessor\LanguageAppProcessor.csproj", "{411C27A7-3E8F-4463-93FE-D196782BBCC4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LanguageAppProcessor", "LanguageAppProcessor\LanguageAppProcessor.csproj", "{411C27A7-3E8F-4463-93FE-D196782BBCC4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LanguageAppFetcher", "LanguageAppFetcher\LanguageAppFetcher.csproj", "{1BD5B8EC-D989-44C2-A8F1-9EB48074C38F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{411C27A7-3E8F-4463-93FE-D196782BBCC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{411C27A7-3E8F-4463-93FE-D196782BBCC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{411C27A7-3E8F-4463-93FE-D196782BBCC4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BD5B8EC-D989-44C2-A8F1-9EB48074C38F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BD5B8EC-D989-44C2-A8F1-9EB48074C38F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BD5B8EC-D989-44C2-A8F1-9EB48074C38F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BD5B8EC-D989-44C2-A8F1-9EB48074C38F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
