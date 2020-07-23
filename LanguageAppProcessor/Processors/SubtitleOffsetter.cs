@@ -1,4 +1,7 @@
-﻿using System;
+﻿using LanguageAppProcessor.DTOs;
+using LanguageAppProcessor.Interfaces;
+using LanguageAppProcessor.Pipeline;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
@@ -6,7 +9,7 @@ using System.Text;
 
 namespace LanguageAppProcessor
 {
-  public class SubtitleOffsetter
+  public class SubtitleOffsetter : IPipelineProcessor<SubtitlePair, SubtitlePair>
   {
     // -- Hyperparameters --
     public double OffsetStart { get; set; }
@@ -32,7 +35,20 @@ namespace LanguageAppProcessor
       public double Gradient { get; set; }
     }
     public List<Iteration> History { get; set; }
+    public void PrintHistory()
+    {
+      if (History == null)
+        return;
 
+      foreach (var item in History)
+      {
+        Console.WriteLine($"Offset = {item.Offset}\t Error = {item.Error}\t Gradient = {item.Gradient}");
+      }
+    }
+
+
+    public event Action<SubtitlePair> Started;
+    public event Action<SubtitlePair, SubtitlePair> Finished;
     public SubtitleOffsetter(double offsetStart = 0, double learningRate = 0.1, double eta = 0.01, int iterations = 1000)
     {
       OffsetStart = offsetStart;
@@ -71,15 +87,13 @@ namespace LanguageAppProcessor
         })
       };
     }
-    public void PrintHistory()
+    public SubtitlePair Process(SubtitlePair input) // warning: impure
     {
-      if (History == null)
-        return;
-
-      foreach (var item in History)
-      {
-        Console.WriteLine($"Offset = {item.Offset}\t Error = {item.Error}\t Gradient = {item.Gradient}");
-      }
+      Started?.Invoke(input);
+      Subtitle offsettedNativeInput = Transform(input.Native, input.Translated);
+      input.Native = offsettedNativeInput;
+      Finished?.Invoke(input, input);
+      return input;
     }
 
     /// <summary>
@@ -111,5 +125,6 @@ namespace LanguageAppProcessor
       };
     }
 
+    
   }
 }

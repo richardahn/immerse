@@ -1,12 +1,17 @@
 ﻿using LanguageAppProcessor.DTOs;
+using LanguageAppProcessor.Interfaces;
 using LanguageAppProcessor.Parsers;
 using LanguageAppProcessor.Pipeline;
+using System;
 using System.Linq;
 
 namespace LanguageAppProcessor.Processors
 {
   public class SubtitleParser : IPipelineProcessor<SubtitleFilePathPair, SubtitlePair>
   {
+    public event Action<SubtitleFilePathPair> Started;
+    public event Action<SubtitleFilePathPair, SubtitlePair> Finished;
+
     static string GetExtension(string path)
     {
       return path.Split('.').Last();
@@ -25,13 +30,17 @@ namespace LanguageAppProcessor.Processors
       }
       return parser.Parse(filePath);
     }
+
     public SubtitlePair Process(SubtitleFilePathPair input)
     {
-      return new SubtitlePair
+      Started?.Invoke(input);
+      var output = new SubtitlePair
       {
         Native = Parse(input.Native),
         Translated = Parse(input.Translated),
       };
+      Finished?.Invoke(input, output);
+      return output;
     }
   }
 }

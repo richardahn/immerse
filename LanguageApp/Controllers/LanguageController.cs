@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace LanguageApp.Controllers
 {
-  
+
   [ApiController]
   [Route("api/[controller]")]
   public class LanguageController : Controller
