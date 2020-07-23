@@ -7,29 +7,30 @@ namespace LanguageAppProcessor.Processors
 {
   public class SubtitleParser : IPipelineProcessor<SubtitleFilePathPair, SubtitlePair>
   {
-    static string GetExtension(string fileName)
+    static string GetExtension(string path)
     {
-      return fileName.Split('.').Last();
+      return path.Split('.').Last();
     }
-    static SubtitleFileParser GetParserFromExtension(string extension)
+    static Subtitle Parse(string filePath)
     {
+      string extension = GetExtension(filePath);
+      SubtitleFileParser parser;
       if (extension == "srt")
       {
-        return new SRTSubtitleFileParser();
+        parser = new SRTSubtitleFileParser();
       }
       else
       {
-        return new SMISubtitleFileParser();
+        parser = new SMISubtitleFileParser();
       }
+      return parser.Parse(filePath);
     }
     public SubtitlePair Process(SubtitleFilePathPair input)
     {
       return new SubtitlePair
       {
-        Native = GetParserFromExtension(GetExtension(input.Native))
-         .Parse(input.Native),
-        Translated = GetParserFromExtension(GetExtension(input.Translated))
-        .Parse(input.Translated),
+        Native = Parse(input.Native),
+        Translated = Parse(input.Translated),
       };
     }
   }

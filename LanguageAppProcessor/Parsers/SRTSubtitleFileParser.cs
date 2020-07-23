@@ -13,7 +13,7 @@ namespace LanguageAppProcessor.Parsers
     {
       Subtitle subtitle = new Subtitle
       {
-        MovieName = Regex.Match(filePath.Split('\\').Last(), @".*(?=_.*?\.)").Value.Replace('_', ' '),
+        MovieName = GetMovieName(filePath),
         Intervals = GetIntervals(filePath)
       };
       return subtitle;

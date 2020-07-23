@@ -15,7 +15,7 @@ namespace LanguageAppProcessor.Parsers
       Index = 0; // Reset index
       Subtitle subtitle = new Subtitle
       {
-        MovieName = filePath.Split('\\').Last(),
+        MovieName = GetMovieName(filePath),
         Intervals = GetIntervals(filePath)
       };
       return subtitle;
