@@ -33,7 +33,7 @@ namespace LanguageAppProcessor
         context.SaveChanges();
       }
     }
-    static SubtitleParser ParserFromExtension(string extension)
+    static SubtitleParser GetParserFromExtension(string extension)
     {
       if (extension == "srt")
       {
@@ -44,6 +44,11 @@ namespace LanguageAppProcessor
         return new SMISubtitleParser();
       }
     }
+    public static string GetExtension(string fileName)
+    {
+      return fileName.Split('.').Last();
+    }
+
     // Hyperparameters
     public double MaxErrorAllowed { get; set; }
     public double ConversationSizeMinimum { get; set; }
@@ -56,14 +61,14 @@ namespace LanguageAppProcessor
     }
     public ProcessedTranslation Process(string nativeFilePath, string translatedFilePath)
     {
-      var nativeParser = ParserFromExtension(nativeFilePath.Split('.').Last());
-      var translatedParser = ParserFromExtension(translatedFilePath.Split('.').Last());
-      var nativeSubtitle = nativeParser.Parse(nativeFilePath);
-      var translatedSubtitle = translatedParser.Parse(translatedFilePath);
+      var nativeSubtitle = GetParserFromExtension(GetExtension(nativeFilePath))
+        .Parse(nativeFilePath);
+      var translatedSubtitle = GetParserFromExtension(GetExtension(translatedFilePath))
+        .Parse(translatedFilePath);
 
       // Offset
-      var offsetter = new SubtitleOffsetter();
-      var transformed = offsetter.Transform(nativeSubtitle, translatedSubtitle);
+      var transformed = new SubtitleOffsetter()
+        .Transform(nativeSubtitle, translatedSubtitle);
       //offsetter.PrintHistory();
 
       // Map
