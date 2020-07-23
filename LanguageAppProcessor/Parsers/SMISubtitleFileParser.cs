@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace LanguageAppProcessor
+namespace LanguageAppProcessor.Parsers
 {
-  public class SMISubtitleParser : SubtitleParser
+  public class SMISubtitleFileParser : SubtitleFileParser
   {
     private int Index { get; set; }
     public override Subtitle Parse(string filePath)

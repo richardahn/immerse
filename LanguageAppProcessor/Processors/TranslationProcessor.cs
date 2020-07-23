@@ -1,5 +1,6 @@
 ﻿using LanguageAppProcessor.DTOs;
 using LanguageAppProcessor.Models;
+using LanguageAppProcessor.Parsers;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -33,15 +34,15 @@ namespace LanguageAppProcessor
         context.SaveChanges();
       }
     }
-    static SubtitleParser GetParserFromExtension(string extension)
+    static SubtitleFileParser GetParserFromExtension(string extension)
     {
       if (extension == "srt")
       {
-        return new SRTSubtitleParser();
+        return new SRTSubtitleFileParser();
       }
       else
       {
-        return new SMISubtitleParser();
+        return new SMISubtitleFileParser();
       }
     }
     public static string GetExtension(string fileName)

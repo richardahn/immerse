@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace LanguageAppProcessor
+namespace LanguageAppProcessor.Parsers
 {
-  public abstract class SubtitleParser
+  public abstract class SubtitleFileParser
   {
     public abstract Subtitle Parse(string filepath);
   }
