@@ -7,23 +7,27 @@ namespace LanguageAppProcessor.DTOs
 {
   public class SubtitleConversations
   {
-    public string Source { get; set; }
+    public string MovieName { get; set; }
     public List<SubtitleConversation> Conversations { get; set; }
 
-    public void Filter(Func<SubtitleConversation, bool> condition)
+    public void Print(int limit = 3)
     {
-      Conversations = Conversations.Where(condition).ToList();
-    }
-    public void Print()
-    {
+      int i = 0;
       foreach (var conversation in Conversations)
       {
+        if (i == limit) break;
         Console.WriteLine("-- Conversation --");
         foreach (var interval in conversation.Intervals)
         {
-          Console.WriteLine($"[{interval.Input.TimeFrame.Start}] {interval.Input.JoinedLines} --> {interval.Target.JoinedLines}");
+          Console.WriteLine($"[{interval.Input.TimeFrame.Start}, {interval.Error:0.00}] {interval.Input.JoinedLines} --> {interval.Target.JoinedLines}");
         }
+        i++;
       }
+    }
+
+    public void PrintAverageError()
+    {
+      Console.WriteLine($"Average error = {Conversations.Average(c => c.Intervals.Average(i => i.Error))} for {Conversations.Count} conversations");
     }
   }
 }

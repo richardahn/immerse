@@ -1,6 +1,7 @@
 ﻿using LanguageApp.Services;
 using LanguageAppProcessor;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,17 +14,18 @@ namespace LanguageApp.Controllers
   [Route("api/[controller]")]
   public class LanguageController : Controller
   {
-    private readonly ConversationClozeService _conversationClozeService;
-    public LanguageController(ConversationClozeService conversationClozeService)
+    private readonly TranslationContext _context;
+    private readonly QuizService _quizService;
+    public LanguageController(TranslationContext context, QuizService quizService)
     {
-      _conversationClozeService = conversationClozeService;
+      _context = context;
+      _quizService = quizService;
     }
 
-    // GetRandomConversation /language/random
-    [HttpGet("random")]
-    public ActionResult RandomConversationCloze(int clozesPerLine)
+    [HttpGet("problem/{type}/{id?}")]
+    public ActionResult GetProblem(string type, int? id)
     {
-      return Json(_conversationClozeService.GenerateRandom(clozesPerLine));
+      return Json(_quizService.GenerateProblem(type, id));
     }
   }
 }

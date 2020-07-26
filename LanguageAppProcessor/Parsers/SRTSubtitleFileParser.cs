@@ -75,7 +75,7 @@ namespace LanguageAppProcessor.Parsers
 
     private string CleanLine(string line)
     {
-      return Regex.Replace(line, @"(<.*?>)", "");
+      return string.Join(' ', Regex.Replace(line, @"(<.*?>)", "").Split(' ').Where(s => Regex.IsMatch(s, @"\p{L}")));
     }
   }
 }

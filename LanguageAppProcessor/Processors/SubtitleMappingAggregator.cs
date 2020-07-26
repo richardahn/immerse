@@ -1,4 +1,5 @@
 ﻿using LanguageAppProcessor.DTOs;
+using LanguageAppProcessor.Pipeline;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,13 +7,23 @@ using System.Text;
 
 namespace LanguageAppProcessor
 {
-  public class SubtitleConversationAggregator
+  public class SubtitleMappingAggregator : IPipelineProcessor<SubtitleMapping, SubtitleConversations>
   {
     public double SilenceMinimum { get; set; }
-    public SubtitleConversationAggregator(double silenceMinimum)
+    public event Action<SubtitleMapping> Started;
+    public event Action<SubtitleMapping, SubtitleConversations> Finished;
+    private Func<SubtitleConversation, bool> ConversationFilter { get; set; }
+    public SubtitleMappingAggregator(double silenceMinimum = 1.5)
     {
       SilenceMinimum = silenceMinimum;
     }
+
+    public SubtitleMappingAggregator WithFilter(Func<SubtitleConversation, bool> conversationFilter)
+    {
+      ConversationFilter = conversationFilter;
+      return this;
+    }
+
     public SubtitleConversations Aggregate(SubtitleMapping mapping)
     {
       double silenceStart = 0;
@@ -34,9 +45,21 @@ namespace LanguageAppProcessor
         conversations.Add(currentConversation);
       return new SubtitleConversations
       {
-        Source = mapping.Source,
+        MovieName = mapping.MovieName,
         Conversations = conversations,
       };
+    }
+
+    public SubtitleConversations Process(SubtitleMapping input)
+    {
+      Started?.Invoke(input);
+      var output = Aggregate(input);
+      if (ConversationFilter != null)
+      {
+        output.Conversations = output.Conversations.Where(ConversationFilter).ToList();
+      }
+      Finished?.Invoke(input, output);
+      return output;
     }
   }
 }

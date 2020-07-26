@@ -1,18 +1,17 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router';
-import { Layout } from './components/Layout';
+import { AppLayout } from './components/AppLayout';
 import { Home } from './components/Home';
-
-import './custom.css'
+import 'antd/dist/antd.css';
 
 export default class App extends Component {
   static displayName = App.name;
 
   render () {
     return (
-      <Layout>
+      <AppLayout>
         <Route exact path='/' component={Home} />
-      </Layout>
+      </AppLayout>
     );
   }
 }

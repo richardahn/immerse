@@ -91,7 +91,9 @@ namespace LanguageAppProcessor.Parsers
     private string[] GetLines(string line)
     {
       string lineRaw = Regex.Match(line, @"(?<=<P CLASS=SUBTTL>).+").Value;
-      return Regex.Split(lineRaw, @"<br>");
+      string[] lines = Regex.Split(lineRaw, @"<br>");
+
+      return lines.Select(line => CleanLine(line)).ToArray();
     }
     private bool IsStart(string line)
     {
@@ -100,6 +102,10 @@ namespace LanguageAppProcessor.Parsers
     private bool IsLine(string line)
     {
       return line.Contains("<P");
+    }
+    private string CleanLine(string line)
+    {
+      return string.Join(' ', Regex.Replace(line, @"(<.*?>)", "").Split(' ').Where(s => Regex.IsMatch(s, @"\p{L}")));
     }
   }
 }

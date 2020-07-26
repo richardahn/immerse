@@ -10,7 +10,7 @@ namespace LanguageAppProcessor
     public int? Index { get; set; }
     public TimeFrame TimeFrame { get; set; }
     public List<string> Lines { get; set; }
-    public string JoinedLines => string.Join(" ", Lines);
+    public string JoinedLines => string.Join(". ", Lines);
 
 
     public double Error(SubtitleInterval b)

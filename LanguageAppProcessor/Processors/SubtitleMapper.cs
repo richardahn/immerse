@@ -1,4 +1,5 @@
 ﻿using LanguageAppProcessor.DTOs;
+using LanguageAppProcessor.Pipeline;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,15 +7,30 @@ using System.Text;
 
 namespace LanguageAppProcessor
 {
-  public class SubtitleMapping
+  public class SubtitleMapper : IPipelineProcessor<SubtitlePair, SubtitleMapping>
   {
     public string Source { get; set; }
-    public List<SubtitleIntervalMapping> Intervals { get; set; }
 
-    public SubtitleMapping(Subtitle input, Subtitle target)
+    public Func<SubtitleIntervalMapping, bool> IntervalsFilter { get; set; }
+    public event Action<SubtitlePair> Started;
+    public event Action<SubtitlePair, SubtitleMapping> Finished;
+    public SubtitleMapper WithIntervalsFilter(Func<SubtitleIntervalMapping, bool> condition)
     {
+      IntervalsFilter = condition;
+      return this;
+    }
+    public SubtitleMapping Process(SubtitlePair inputPair)
+    {
+      Started?.Invoke(inputPair);
+      var input = inputPair.Native;
+      var target = inputPair.Translated;
+
+      var mapping = new SubtitleMapping
+      {
+        MovieName = input.MovieName,
+        Intervals = new List<SubtitleIntervalMapping>(),
+      };
       Source = input.MovieName;
-      Intervals = new List<SubtitleIntervalMapping>();
       int searchStartingPoint = 0;
       List<SubtitleInterval> searchRange = target.Intervals.ToList();
 
@@ -46,7 +62,7 @@ namespace LanguageAppProcessor
           double nextStartError = ((i + 1) >= intervals.Count) ? 0 : intervals[i + 1].StartError(searchRange[Search.Look(intervals[i + 1].TimeFrame.Start, searchStartingPoint, searchRange, tf => tf.Start)]);
 
           double errorWithoutAggregation = Math.Sqrt(Math.Pow(aggregateEndError, 2) + Math.Pow(intervalStartError, 2));
-          double errorWithAggregation = Math.Sqrt(Math.Pow(intervalEndError, 2)+ Math.Pow(nextStartError, 2) + Math.Pow(0.2 * (interval.TimeFrame.End - aggregate.Input.TimeFrame.End).TotalSeconds, 2));
+          double errorWithAggregation = Math.Sqrt(Math.Pow(intervalEndError, 2) + Math.Pow(nextStartError, 2) + Math.Pow(0.2 * (interval.TimeFrame.End - aggregate.Input.TimeFrame.End).TotalSeconds, 2));
           if (errorWithAggregation < errorWithoutAggregation)
           {
             // Add to aggregate
@@ -57,7 +73,7 @@ namespace LanguageAppProcessor
           {
             // Finish aggregate 
             aggregate.Target = AggregateInterval(searchRange, aggregateStart, aggregateEnd);
-            Intervals.Add(aggregate);
+            mapping.Intervals.Add(aggregate);
 
             // Start a new one starting from interval
             aggregate = new SubtitleIntervalMapping(interval, null);
@@ -68,9 +84,14 @@ namespace LanguageAppProcessor
         searchStartingPoint = closestEndIntervalIndex; // Boosts performance by giving a better starting point
       }
       aggregate.Target = AggregateInterval(searchRange, aggregateStart, aggregateEnd);
-      Intervals.Add(aggregate);
+      mapping.Intervals.Add(aggregate);
+      if (IntervalsFilter != null)
+      {
+        mapping.Intervals = mapping.Intervals.Where(IntervalsFilter).ToList();
+      }
+      Finished?.Invoke(inputPair, mapping);
+      return mapping;
     }
-
     private SubtitleInterval MergeInterval(SubtitleInterval a, SubtitleInterval b)
     {
       return new SubtitleInterval
@@ -94,50 +115,5 @@ namespace LanguageAppProcessor
       return aggregated;
     }
 
-    public void Filter(Func<SubtitleIntervalMapping, bool> condition)
-    {
-      Intervals = Intervals.Where(condition).ToList();
-    }
-    public void PrintMismatches()
-    {
-      int numMatching = 0;
-      foreach (var interval in Intervals)
-      {
-        if (interval.Input.Lines.Count() == interval.Target.Lines.Count())
-        {
-          numMatching++;
-        }
-      }
-      Console.WriteLine($"Matches: {numMatching} / {Intervals.Count} = {numMatching / Intervals.Count}");
-    }
-    public void PrintErrorHistogram(double bucketSize = 0.5)
-    {
-      Dictionary<int, List<SubtitleIntervalMapping>> histogram = new Dictionary<int, List<SubtitleIntervalMapping>>();
-      double sum = 0;
-      foreach (var interval in Intervals)
-      {
-        sum += interval.Error;
-        int key = (int)(interval.Error / bucketSize);
-        if (!histogram.ContainsKey(key))
-        {
-          histogram.Add(key, new List<SubtitleIntervalMapping>());
-        }
-        histogram[key].Add(interval);
-      }
-      var list = histogram.Keys.ToList();
-      list.Sort();
-      foreach (var key in list)
-      {
-        Console.WriteLine($"Bucket {key}: {histogram[key].Count}");
-      }
-      Console.WriteLine($"Average Error: {sum / Intervals.Count}");
-    }
-    public void Print()
-    {
-      foreach (var interval in Intervals)
-      {
-        Console.WriteLine($"{interval.Input.JoinedLines}  -->  {interval.Target.JoinedLines}, {interval.Error}");
-      }
-    }
   }
 }

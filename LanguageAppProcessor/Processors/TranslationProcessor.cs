@@ -1,4 +1,5 @@
-﻿using LanguageAppProcessor.DTOs;
+﻿/*
+ * using LanguageAppProcessor.DTOs;
 using LanguageAppProcessor.Models;
 using LanguageAppProcessor.Parsers;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +20,7 @@ namespace LanguageAppProcessor
       {
         var conversations = Conversations.Conversations.Select(c => new Conversation
         {
-          Source = Conversations.Source,
+          Source = Conversations.MovieName,
           Lines = c.Intervals.Select(i => new ConversationLine
           {
             NativeText = i.Input.JoinedLines,
@@ -73,7 +74,7 @@ namespace LanguageAppProcessor
       //offsetter.PrintHistory();
 
       // Map
-      var mapping = new SubtitleMapping(transformed, translatedSubtitle);
+      var mapping = new SubtitleMapper(transformed, translatedSubtitle);
       mapping.Filter(i => i.Error < MaxErrorAllowed);
       //mapping.Print();
       //mapping.PrintMismatches();
@@ -91,3 +92,4 @@ namespace LanguageAppProcessor
     }
   }
 }
+*/

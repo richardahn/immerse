@@ -71,7 +71,6 @@ namespace LanguageAppProcessor
         offset -= LearningRate * iteration.Gradient;
       }
 
-
       return new Subtitle
       {
         MovieName = input.MovieName,
@@ -111,7 +110,7 @@ namespace LanguageAppProcessor
         int closestIntervalIndex = Search.Look(yPred, currentStartIndex, searchRange, tf => tf.Start);
         var y = searchRange[closestIntervalIndex].TimeFrame.Start;
 
-        double error = (yPred - y).TotalSeconds;
+        double error = (yPred - y).TotalSeconds; 
         errorSum += Math.Abs(error); // MAE error
         gradientSum += error >= 0 ? 1 : -1; // MAE error gradient
         currentStartIndex = closestIntervalIndex;
@@ -124,7 +123,5 @@ namespace LanguageAppProcessor
         Gradient = gradientSum / M,
       };
     }
-
-    
   }
 }
